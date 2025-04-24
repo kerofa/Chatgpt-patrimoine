@@ -5,9 +5,7 @@ export default function RootLayout({ children }) {
         <title>chatgpt-patrimoine</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
-      <body>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
