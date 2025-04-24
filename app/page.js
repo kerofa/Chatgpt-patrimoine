@@ -7,16 +7,14 @@ export default function Home() {
 
   if (!started) {
     return (
-      <main className="min-h-screen flex flex-col items-center justify-center p-8 bg-gray-50">
-        <h1 className="text-5xl font-extrabold mb-4">Mon Gestionnaire de Patrimoine</h1>
-        <p className="max-w-2xl text-gray-700 text-lg mb-8 text-center">
-          Optimiser la gestion de tes finances personnelles, préparer l’avenir et
-          maximiser ton patrimoine. Épargne, investissements, fiscalité et
-          planification retraite, avec un accompagnement direct et humain.
+      <main className="flex grow flex-col items-center justify-center px-6 py-12 bg-cover bg-center" style={{ backgroundImage: "url('/hero-bg.jpg')" }}>
+        <h1 className="text-6xl font-extrabold text-white mb-4 drop-shadow-lg">Mon Gestionnaire de Patrimoine</h1>
+        <p className="max-w-2xl text-white text-xl mb-8 text-center drop-shadow-lg">
+          Optimiser la gestion de tes finances personnelles, préparer l’avenir et maximiser ton patrimoine.
         </p>
         <button
           onClick={() => setStarted(true)}
-          className="px-8 py-4 bg-blue-600 text-white font-medium rounded-lg shadow hover:bg-blue-700 transition"
+          className="px-8 py-4 bg-blue-600 text-white font-medium rounded-full shadow-lg hover:bg-blue-700 transition"
         >
           Commencer le chat
         </button>
