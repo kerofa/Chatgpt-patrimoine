@@ -1,0 +1,21 @@
+{
+  "name": "chatgpt-patrimoine",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "openai": "^4.15.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.2.7",
+    "postcss": "^8.4.12",
+    "autoprefixer": "^10.4.6"
+  }
+}
