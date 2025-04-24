@@ -11,7 +11,6 @@ export default function Home() {
     phone: "",
     agreeCallback: null,
   });
-  // messages contient à la fois gating ET chat
   const [messages, setMessages] = useState([
     { role: "bot", text: "Salut ! Pour commencer, quel est ton prénom ?" },
   ]);
@@ -21,20 +20,21 @@ export default function Home() {
     "Ton nom de famille ?",
     "Ton adresse e-mail ?",
     "Ton numéro de téléphone ?",
-    "Accepterais-tu d'être rappelé pour parler de ton projet ? (oui/non)",
+    "Accepterais-tu d’être rappelé pour parler de ton projet ? (oui/non)",
   ];
 
-  // Fonction unique pour envoyer une question ou un message
   const sendMessage = async () => {
     if (!input.trim()) return;
     const answer = input.trim();
-    // Ajoute ta réponse à l’historique
+    // Log pour debug
+    console.log("🔄 sendMessage, stage =", stage, "answer =", answer);
+
+    // Ajoute la réponse utilisateur
     setMessages((m) => [...m, { role: "user", text: answer }]);
     setInput("");
 
-    // Si on est encore en gating (0–4)
+    // Gating : recueillir infos
     if (stage < 5) {
-      // Sauvegarde dans userInfo
       const updated = { ...userInfo };
       if (stage === 0) updated.firstName = answer;
       if (stage === 1) updated.lastName = answer;
@@ -46,9 +46,8 @@ export default function Home() {
       const nextStage = stage + 1;
       setStage(nextStage);
 
-      // Après dernière question de gating (stage 4 → nextStage 5)
+      // Si fin du gating et accord donné
       if (nextStage === 5 && updated.agreeCallback) {
-        // Envoi ton RDV si accord
         await fetch("/api/rdv", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -61,14 +60,11 @@ export default function Home() {
       } else if (nextStage === 5) {
         setMessages((m) => [
           ...m,
-          {
-            role: "bot",
-            text: "Pas de souci, tu peux poser tes questions directement.",
-          },
+          { role: "bot", text: "Pas de souci, tu peux poser tes questions directement." },
         ]);
       }
 
-      // Pose soit la prochaine question gating, soit le message d’intro du chat
+      // Affiche la question suivante ou transition vers le chat
       setMessages((m) => [
         ...m,
         {
@@ -79,25 +75,27 @@ export default function Home() {
               : "Maintenant, pose-moi ta question sur ton patrimoine !",
         },
       ]);
-
       return;
     }
 
-    // Si stage ≥ 5 → on est en mode chat IA
+    // Mode chat IA
     try {
+      console.log("📡 Appel /api/chat avec :", answer);
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: answer }),
       });
+      console.log("📥 Réponse status", res.status);
       const { response } = await res.json();
+      console.log("📨 Response body:", response);
       setMessages((m) => [...m, { role: "bot", text: response }]);
     } catch (err) {
+      console.error("Chat error:", err);
       setMessages((m) => [
         ...m,
         { role: "bot", text: "Désolé, une erreur est survenue côté IA." },
       ]);
-      console.error("Chat error:", err);
     }
   };
 
@@ -105,7 +103,14 @@ export default function Home() {
     <div style={{ padding: 20, fontFamily: "Arial, sans-serif" }}>
       <h1>chatgpt-patrimoine</h1>
       <div
-        style={{ maxHeight: 400, overflowY: "auto", marginBottom: 10 }}
+        style={{
+          maxHeight: 400,
+          overflowY: "auto",
+          marginBottom: 10,
+          border: "1px solid #eee",
+          padding: 10,
+          borderRadius: 8,
+        }}
       >
         {messages.map((m, i) => (
           <p key={i}>
@@ -119,11 +124,23 @@ export default function Home() {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
           placeholder="Ta réponse..."
-          style={{ flex: 1, padding: 10 }}
+          style={{
+            flex: 1,
+            padding: 10,
+            border: "1px solid #ccc",
+            borderRadius: 4,
+          }}
         />
         <button
           onClick={sendMessage}
-          style={{ padding: "10px 20px" }}
+          style={{
+            padding: "10px 20px",
+            backgroundColor: "#0070f3",
+            color: "#fff",
+            border: "none",
+            borderRadius: 4,
+            cursor: "pointer",
+          }}
         >
           Envoyer
         </button>
